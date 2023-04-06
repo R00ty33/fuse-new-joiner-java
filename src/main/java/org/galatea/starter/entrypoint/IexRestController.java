@@ -1,6 +1,5 @@
 package org.galatea.starter.entrypoint;
 
-import java.util.Date;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,7 @@ public class IexRestController {
         MediaType.APPLICATION_JSON_VALUE})
   public List<IexHistoricalPrice> getHistoricalTradedPrices(
         @RequestParam(value = "symbol") final String symbol,
-        String range, Date date) {
+        String range, String date) {
     return iexService.getHistoricalPriceForSymbol(symbol, range, date);
   }
 }

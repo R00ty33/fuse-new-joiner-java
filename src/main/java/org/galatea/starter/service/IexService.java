@@ -23,6 +23,9 @@ public class IexService {
 
   @NonNull
   private IexClient iexClient;
+  @NonNull
+  private IexCloudClient iexCloudClient;
+
 
 
   /**
@@ -56,12 +59,13 @@ public class IexService {
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
-  public List<IexHistoricalPrice> getHistoricalPriceForSymbol(final String symbol, String range, Date date) {
+  public List<IexHistoricalPrice> getHistoricalPriceForSymbol(final String symbol, String range, String date) {
     if (StringUtils.isBlank(symbol)) {
       return Collections.emptyList();
     } else {
-      System.out.println("CLIENT CALL" + symbol);
-      return iexClient.getHistoricalPricesForSymbol(symbol, range);
+      if (StringUtils.isNotBlank(range)) return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, range);
+      else if (StringUtils.isNotBlank(date)) return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, date);
+      else  return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
     }
   }
 }

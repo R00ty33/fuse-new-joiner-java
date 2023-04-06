@@ -35,16 +35,4 @@ public interface IexClient {
   @GetMapping("/tops/last")
   List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols);
 
-  /**
-   * Get the historical traded prices for a given range or date.
-   *
-   * @param symbol the ticker for the stock
-   * @param range the time series for the historical traded price (max, 5y, 2y, 1y, ytd, 6m, 3m, 1m, 5d)
-   * @return A list of historical traded price objects for each Symbol that is passed in
-   */
-  @GetMapping("/stock/{symbol}/chart/{range}?token=${spring.rest.iexAuthToken}")
-  List<IexHistoricalPrice> getHistoricalPricesForSymbol(
-          @PathVariable(value = "symbol") String symbol,
-          @PathVariable(value = "range") String range);
-
 }
