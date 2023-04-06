@@ -1,10 +1,13 @@
 package org.galatea.starter.service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
 import org.springframework.stereotype.Service;
@@ -45,5 +48,20 @@ public class IexService {
     }
   }
 
-
+  /**
+   * Get the historical traded prices for a given range or date.
+   *
+   * @param symbol the ticker for the stock
+   * @param range the time series for the historical traded price (max, 5y, 2y, 1y, ytd, 6m, 3m, 1m, 5d)
+   * @param date the specific date (YYYYMMDD)
+   * @return A list of historical traded price objects for each Symbol that is passed in
+   */
+  public List<IexHistoricalPrice> getHistoricalPriceForSymbol(final String symbol, String range, Date date) {
+    if (StringUtils.isBlank(symbol)) {
+      return Collections.emptyList();
+    } else {
+      System.out.println("CLIENT CALL" + symbol);
+      return iexClient.getHistoricalPricesForSymbol(symbol, range);
+    }
+  }
 }

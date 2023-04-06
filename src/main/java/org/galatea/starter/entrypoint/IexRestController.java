@@ -1,5 +1,6 @@
 package org.galatea.starter.entrypoint;
 
+import java.util.Date;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import net.sf.aspect4log.Log;
 import net.sf.aspect4log.Log.Level;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.service.IexService;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -48,4 +50,19 @@ public class IexRestController {
     return iexService.getLastTradedPriceForSymbols(symbols);
   }
 
+  /**
+   * Get the historical traded prices for a given range or date.
+   *
+   * @param symbol the ticker for the stock
+   * @param range the time series for the historical traded price (max, 5y, 2y, 1y, ytd, 6m, 3m, 1m, 5d)
+   * @param date the specific date (YYYYMMDD)
+   * @return A list of historical traded price objects for each Symbol that is passed in
+   */
+  @GetMapping(value = "${mvc.iex.getHistoricalPricePath}", produces = {
+        MediaType.APPLICATION_JSON_VALUE})
+  public List<IexHistoricalPrice> getHistoricalTradedPrices(
+        @RequestParam(value = "symbol") final String symbol,
+        String range, Date date) {
+    return iexService.getHistoricalPriceForSymbol(symbol, range, date);
+  }
 }
