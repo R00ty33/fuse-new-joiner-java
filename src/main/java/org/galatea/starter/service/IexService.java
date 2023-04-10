@@ -55,17 +55,22 @@ public class IexService {
    * Get the historical traded prices for a given range or date.
    *
    * @param symbol the ticker for the stock
-   * @param range the time series for the historical traded price (max, 5y, 2y, 1y, ytd, 6m, 3m, 1m, 5d)
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
-  public List<IexHistoricalPrice> getHistoricalPriceForSymbol(final String symbol, String range, String date) {
+  public List<IexHistoricalPrice> getHistoricalPriceForSymbol(
+          final String symbol, final String range, final String date) {
     if (StringUtils.isBlank(symbol)) {
       return Collections.emptyList();
     } else {
-      if (StringUtils.isNotBlank(range)) return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, range);
-      else if (StringUtils.isNotBlank(date)) return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, date);
-      else  return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
+      if (StringUtils.isNotBlank(range)) {
+        return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, range);
+      } else if (StringUtils.isNotBlank(date)) {
+        return iexCloudClient.getHistoricalPricesForSymbolWithDate(symbol, date);
+      } else {
+        return iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
+      }
     }
   }
 }
