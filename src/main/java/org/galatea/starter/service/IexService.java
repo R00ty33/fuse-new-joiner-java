@@ -63,22 +63,26 @@ public class IexService {
   public List<List<IexHistoricalPrice>> getHistoricalPriceForSymbol(
           final List<String> symbols, final List<String> ranges, final String date) {
     if (CollectionUtils.isEmpty(symbols)) { // symbols must not be empty
-      log.warn("User passed empty list to /HistorcalTradePrices endpoint. Symbols must not be empty.");
+      log.warn("User passed empty list to /HistorcalTradePrices endpoint. "
+              + "Symbols must not be empty.");
       return Collections.emptyList();
     } else {
       List<List<IexHistoricalPrice>> historicalPriceListForSymbols = new ArrayList<>();
       List<IexHistoricalPrice> iexHistoricalPrice = new ArrayList<>();
       if (!CollectionUtils.isEmpty(ranges)) { // symbols & ranges
         if (symbols.size() != ranges.size()) { // symbols & ranges must be the same size
-          log.warn("User passed different sized list to /HistorcalTradePrices endpoint. Symbols and ranges must be the same size.");
+          log.warn("User passed different sized list to /HistorcalTradePrices endpoint. "
+                  + "Symbols and ranges must be the same size.");
           return Collections.emptyList();
         }
-        for (int i=0; i<symbols.size(); i++) {
+        for (int i = 0; i < symbols.size(); i++) {
           try {
-            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbols.get(i), ranges.get(i));
+            iexHistoricalPrice = iexCloudClient
+                    .getHistoricalPricesForSymbolWithRange(symbols.get(i), ranges.get(i));
           } catch (Exception e) {
-            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
-            + symbols.get(i) + " and range: " + ranges.get(i));
+            log.error("Exception: " + e
+                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+                    + symbols.get(i) + " and range: " + ranges.get(i));
           }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
             historicalPriceListForSymbols.add(iexHistoricalPrice);
@@ -88,9 +92,11 @@ public class IexService {
       } else if (StringUtils.isNotBlank(date)) { // symbols & date
         for (String symbol : symbols) {
           try {
-            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithDate(symbol, date);
+            iexHistoricalPrice = iexCloudClient
+                    .getHistoricalPricesForSymbolWithDate(symbol, date);
           } catch (Exception e) {
-            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+            log.error("Exception: " + e
+                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
                     + symbol + " and date: " + date);
           }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
@@ -101,9 +107,11 @@ public class IexService {
       } else { // symbols
         for (String symbol : symbols) {
           try {
-            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
+            iexHistoricalPrice = iexCloudClient
+                    .getHistoricalPricesForSymbolWithRange(symbol, "max");
           } catch (Exception e) {
-            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+            log.error("Exception: " + e
+                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
                     + symbol + " and range: max");
           }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
