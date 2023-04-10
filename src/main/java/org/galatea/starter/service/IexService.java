@@ -74,7 +74,12 @@ public class IexService {
           return Collections.emptyList();
         }
         for (int i=0; i<symbols.size(); i++) {
-          iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbols.get(i), ranges.get(i));
+          try {
+            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbols.get(i), ranges.get(i));
+          } catch (Exception e) {
+            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+            + symbols.get(i) + " and range: " + ranges.get(i));
+          }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
             historicalPriceListForSymbols.add(iexHistoricalPrice);
           }
@@ -82,7 +87,12 @@ public class IexService {
         return historicalPriceListForSymbols;
       } else if (StringUtils.isNotBlank(date)) { // symbols & date
         for (String symbol : symbols) {
-          iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithDate(symbol, date);
+          try {
+            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithDate(symbol, date);
+          } catch (Exception e) {
+            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+                    + symbol + " and date: " + date);
+          }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
             historicalPriceListForSymbols.add(iexHistoricalPrice);
           }
@@ -90,7 +100,12 @@ public class IexService {
         return historicalPriceListForSymbols;
       } else { // symbols
         for (String symbol : symbols) {
-          iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
+          try {
+            iexHistoricalPrice = iexCloudClient.getHistoricalPricesForSymbolWithRange(symbol, "max");
+          } catch (Exception e) {
+            log.error("Exception: " + e + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+                    + symbol + " and range: max");
+          }
           if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
             historicalPriceListForSymbols.add(iexHistoricalPrice);
           }
