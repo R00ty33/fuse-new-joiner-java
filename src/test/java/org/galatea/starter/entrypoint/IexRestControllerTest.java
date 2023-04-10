@@ -80,4 +80,61 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(jsonPath("$", is(Collections.emptyList())))
         .andReturn();
   }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDate() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET&date=20230408")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithRange() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET&ranges=5y")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDifferentSizedLists() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET&ranges=5y,5y")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDifferentSizedLists2() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET,TSLA&ranges=5y")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+
+  @Test
+  public void testGetHistoricTradedPricesWithEmptyList() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(Collections.emptyList())))
+            .andReturn();
+  }
+
 }
