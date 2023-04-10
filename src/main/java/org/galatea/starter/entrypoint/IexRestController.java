@@ -52,16 +52,17 @@ public class IexRestController {
   /**
    * Get the historical traded prices for a given range or date.
    *
-   * @param symbol the ticker for the stock
-   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param symbols the ticker for the stock
+   * @param ranges the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
   @GetMapping(value = "${mvc.iex.getHistoricalPricePath}", produces = {
         MediaType.APPLICATION_JSON_VALUE})
-  public List<IexHistoricalPrice> getHistoricalTradedPrices(
-        @RequestParam(value = "symbol") final String symbol,
-        final String range, final String date) {
-    return iexService.getHistoricalPriceForSymbol(symbol, range, date);
+  public List<List<IexHistoricalPrice>> getHistoricalTradedPrices(
+        @RequestParam(value = "symbols", required=true) final List<String> symbols,
+        @RequestParam(value = "ranges", required=false) final List<String> ranges,
+        @RequestParam(value = "date", required=false) final String date) {
+    return iexService.getHistoricalPriceForSymbol(symbols, ranges, date);
   }
 }

@@ -34,7 +34,7 @@ public interface IexCloudClient {
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
-  @GetMapping("/stock/{symbol}/chart/date/{date}?token=${spring.rest.iexAuthToken}")
+  @GetMapping("/stock/{symbol}/chart/{date}?token=${spring.rest.iexAuthToken}")
   List<IexHistoricalPrice> getHistoricalPricesForSymbolWithDate(
         @PathVariable(value = "symbol") String symbol,
         @PathVariable(value = "date") String date);
