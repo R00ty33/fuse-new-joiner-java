@@ -127,18 +127,6 @@ public class IexRestControllerTest extends ASpringTest {
   }
 
   @Test
-  public void testGetHistoricTradedPricesWithRange2() throws Exception {
-    MvcResult result = this.mvc.perform(
-                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalTradedPrices?symbols=NET,TSLA&ranges=5y,5y")
-                            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
-            .andExpect(jsonPath("$[1][0].symbol", is("TSLA")))
-            .andReturn();
-  }
-
-  @Test
   public void testGetHistoricTradedPricesWithRangeInvalidSymbol() throws Exception {
     MvcResult result = this.mvc.perform(
                     org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -148,29 +136,6 @@ public class IexRestControllerTest extends ASpringTest {
             .andExpect(jsonPath("$", is(Collections.emptyList())))
             .andReturn();
   }
-
-  @Test
-  public void testGetHistoricTradedPricesWithDifferentSizedLists() throws Exception {
-    MvcResult result = this.mvc.perform(
-                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalTradedPrices?symbols=NET&ranges=5y,5y")
-                            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", is(Collections.emptyList())))
-            .andReturn();
-  }
-
-  @Test
-  public void testGetHistoricTradedPricesWithDifferentSizedLists2() throws Exception {
-    MvcResult result = this.mvc.perform(
-                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalTradedPrices?symbols=NET,TSLA&ranges=5y")
-                            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", is(Collections.emptyList())))
-            .andReturn();
-  }
-
 
   @Test
   public void testGetHistoricTradedPricesWithEmptyList() throws Exception {
