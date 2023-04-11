@@ -56,12 +56,12 @@ public class IexService {
    * Get the historical traded prices for a given range or date.
    *
    * @param symbols the ticker for the stock
-   * @param ranges the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
   public List<List<IexHistoricalPrice>> getHistoricalPriceForSymbol(
-          final List<String> symbols, final List<String> ranges, final String date) {
+          final List<String> symbols, final String range, final String date) {
     if (CollectionUtils.isEmpty(symbols)) { // symbols must not be empty
       log.warn("User passed empty list to /HistorcalTradePrices endpoint. "
               + "Symbols must not be empty.");
@@ -69,57 +69,35 @@ public class IexService {
     } else {
       List<List<IexHistoricalPrice>> historicalPriceListForSymbols = new ArrayList<>();
       List<IexHistoricalPrice> iexHistoricalPrice = new ArrayList<>();
-      if (!CollectionUtils.isEmpty(ranges)) { // symbols & ranges
-        if (symbols.size() != ranges.size()) { // symbols & ranges must be the same size
-          log.warn("User passed different sized list to /HistorcalTradePrices endpoint. "
-                  + "Symbols and ranges must be the same size.");
-          return Collections.emptyList();
+      for (String symbol : symbols) {
+        getHistoricalPricesForSymbol(symbol, range, date);
+        if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
+          historicalPriceListForSymbols.add(iexHistoricalPrice);
         }
-        for (int i = 0; i < symbols.size(); i++) {
-          try {
-            iexHistoricalPrice = iexCloudClient
-                    .getHistoricalPricesForSymbolWithRange(symbols.get(i), ranges.get(i));
-          } catch (Exception e) {
-            log.error("Exception: " + e
-                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
-                    + symbols.get(i) + " and range: " + ranges.get(i));
-          }
-          if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
-            historicalPriceListForSymbols.add(iexHistoricalPrice);
-          }
-        }
-        return historicalPriceListForSymbols;
-      } else if (StringUtils.isNotBlank(date)) { // symbols & date
-        for (String symbol : symbols) {
-          try {
-            iexHistoricalPrice = iexCloudClient
-                    .getHistoricalPricesForSymbolWithDate(symbol, date);
-          } catch (Exception e) {
-            log.error("Exception: " + e
-                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
-                    + symbol + " and date: " + date);
-          }
-          if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
-            historicalPriceListForSymbols.add(iexHistoricalPrice);
-          }
-        }
-        return historicalPriceListForSymbols;
-      } else { // symbols
-        for (String symbol : symbols) {
-          try {
-            iexHistoricalPrice = iexCloudClient
-                    .getHistoricalPricesForSymbolWithRange(symbol, "max");
-          } catch (Exception e) {
-            log.error("Exception: " + e
-                    + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
-                    + symbol + " and range: max");
-          }
-          if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
-            historicalPriceListForSymbols.add(iexHistoricalPrice);
-          }
-        }
-        return historicalPriceListForSymbols;
       }
+      return historicalPriceListForSymbols;
     }
+  }
+
+  public List<IexHistoricalPrice> getHistoricalPricesForSymbol(String symbol, String range, String date) {
+    List<IexHistoricalPrice> result = new ArrayList<>();
+    try {
+      if (StringUtils.isNotBlank(date)) {
+        result = iexCloudClient
+                .getHistoricalPricesForSymbolWithDate(symbol, date);
+      }
+      else {
+        if (StringUtils.isBlank(range)) {
+          range = "max";
+        }
+        result = iexCloudClient
+                .getHistoricalPricesForSymbolWithRange(symbol, range);
+      }
+    } catch (Exception e) {
+      log.error("Exception: " + e
+              + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+              + symbol);
+    }
+    return result;
   }
 }

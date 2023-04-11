@@ -53,7 +53,7 @@ public class IexRestController {
    * Get the historical traded prices for a given range or date.
    *
    * @param symbols the ticker for the stock
-   * @param ranges the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
    * @param date the specific date (YYYYMMDD)
    * @return A list of historical traded price objects for each Symbol that is passed in
    */
@@ -61,9 +61,9 @@ public class IexRestController {
         MediaType.APPLICATION_JSON_VALUE})
   public List<List<IexHistoricalPrice>> getHistoricalTradedPrices(
         @RequestParam(value = "symbols", required = true) final List<String> symbols,
-        @RequestParam(value = "ranges", required = false) final List<String> ranges,
+        @RequestParam(value = "range", required = false) final String range,
         @RequestParam(value = "date", required = false) final String date) {
-    return iexService.getHistoricalPriceForSymbol(symbols, ranges, date);
+    return iexService.getHistoricalPriceForSymbol(symbols, range, date);
   }
 
 
