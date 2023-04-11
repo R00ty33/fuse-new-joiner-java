@@ -4,7 +4,7 @@
       <env name="IEXAuthToken" value="pk_184a8764d1bb4486ab20026b04f9f1ac" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.galatea.starter.Application" />
-    <module name="fuse-new-joiner-java" />
+    <module name="fuse-starter-java" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev --server.port=8080" />
     <option name="VM_PARAMETERS" value="-Dapplication.name=my-fuse-app -Dapplication.log-dir=logs -Dapplication.log-archive-root-dir=logs/archive" />
     <extension name="coverage">

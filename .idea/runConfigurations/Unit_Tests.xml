@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Unit Tests" type="JUnit" factoryName="JUnit">
-    <module name="fuse-new-joiner-java" />
+    <module name="fuse-starter-java" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.galatea.starter.*" />

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tests All" type="JUnit" factoryName="JUnit">
-    <module name="fuse-new-joiner-java" />
+    <module name="fuse-starter-java" />
     <option name="PACKAGE_NAME" value="org.galatea.starter" />
     <option name="MAIN_CLASS_NAME" value="org.galatea.starter.UnitTestRunner" />
     <option name="METHOD_NAME" value="" />
