@@ -309,6 +309,27 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Cucumber Java -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>6.8.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Cucumber JUnit -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>6.8.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Cucumber Spring -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>6.8.0</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- WireMock import for stubbing external REST services, see IexRestControllerTest.java -->
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>
