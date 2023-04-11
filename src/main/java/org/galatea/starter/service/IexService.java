@@ -70,7 +70,7 @@ public class IexService {
       List<List<IexHistoricalPrice>> historicalPriceListForSymbols = new ArrayList<>();
       List<IexHistoricalPrice> iexHistoricalPrice = new ArrayList<>();
       for (String symbol : symbols) {
-        getHistoricalPricesForSymbol(symbol, range, date);
+        iexHistoricalPrice = getHistoricalPricesForSymbol(symbol, range, date);
         if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
           historicalPriceListForSymbols.add(iexHistoricalPrice);
         }
