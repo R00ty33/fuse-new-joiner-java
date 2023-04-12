@@ -1,10 +1,10 @@
 package org.galatea.starter.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Data
 @Builder

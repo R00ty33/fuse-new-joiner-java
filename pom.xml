@@ -330,6 +330,12 @@
 			<version>6.8.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Spring Data Elasticsearch -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+			<version>3.1.2.RELEASE</version>
+		</dependency>
 		<!-- WireMock import for stubbing external REST services, see IexRestControllerTest.java -->
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>

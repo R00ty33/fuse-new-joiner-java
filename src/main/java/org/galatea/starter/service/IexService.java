@@ -77,19 +77,29 @@ public class IexService {
     }
   }
 
-  public List<IexHistoricalPrice> getHistoricalPricesForSymbol(String symbol, String range, String date) {
+  /**
+   * Calls the IEX historical traded prices endpoint.
+   *
+   * @param symbol the ticker for the stock
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param date the specific date (YYYYMMDD)
+   * @return A list of historical traded price objects for the symbol passed
+   */
+  public List<IexHistoricalPrice> getHistoricalPricesForSymbol(
+          final String symbol, final String range, final String date) {
     List<IexHistoricalPrice> result = new ArrayList<>();
     try {
       if (StringUtils.isNotBlank(date)) {
         result = iexCloudClient
                 .getHistoricalPricesForSymbolWithDate(symbol, date);
-      }
-      else {
+      } else {
         if (StringUtils.isBlank(range)) {
-          range = "max";
+          result = iexCloudClient
+                  .getHistoricalPricesForSymbolWithRange(symbol, "max");
+        } else {
+          result = iexCloudClient
+                  .getHistoricalPricesForSymbolWithRange(symbol, range);
         }
-        result = iexCloudClient
-                .getHistoricalPricesForSymbolWithRange(symbol, range);
       }
     } catch (Exception e) {
       log.error("Exception: " + e
