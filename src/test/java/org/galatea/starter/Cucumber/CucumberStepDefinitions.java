@@ -40,7 +40,34 @@ public class CucumberStepDefinitions {
     }
 
     @Then("returned symbol should be {string}")
-    public void thenStringIs(String expected) throws UnsupportedEncodingException {
+    public void returned_symbol_should_be(String expected) throws UnsupportedEncodingException {
         Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[0][0].symbol"));
     }
+
+    @Then("second returned symbol should be {string}")
+    public void second_returned_symbol_should_be(String expected) throws UnsupportedEncodingException {
+        Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[1][0].symbol"));
+    }
+
+    @Then("returned date should be {string}")
+    public void returned_date_should_be(String expected) throws UnsupportedEncodingException {
+        Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[0][0].date"));
+    }
+
+    @Then("second returned date should be {string}")
+    public void second_returned_date_should_be(String expected) throws UnsupportedEncodingException {
+        Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[1][0].date"));
+    }
+
+    @Then("returned IPO date should be {string}")
+    public void returned_IPO_date_should_be(String expected) throws UnsupportedEncodingException {
+        Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[0][0].date"));
+    }
+
+    @Then("second returned IPO date should be {string}")
+    public void second_returned_IPO_date_should_be(String expected) throws UnsupportedEncodingException {
+        Assert.assertEquals(expected, JsonPath.parse(result.getResponse().getContentAsString()).read("$[1][0].date"));
+    }
+
+
 }

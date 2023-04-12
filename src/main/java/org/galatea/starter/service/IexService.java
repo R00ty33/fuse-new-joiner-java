@@ -68,12 +68,10 @@ public class IexService {
       return Collections.emptyList();
     } else {
       List<List<IexHistoricalPrice>> historicalPriceListForSymbols = new ArrayList<>();
-      List<IexHistoricalPrice> iexHistoricalPrice = new ArrayList<>();
+      List<IexHistoricalPrice> iexHistoricalPrice;
       for (String symbol : symbols) {
         iexHistoricalPrice = getHistoricalPricesForSymbol(symbol, range, date);
-        if (!CollectionUtils.isEmpty(iexHistoricalPrice)) {
-          historicalPriceListForSymbols.add(iexHistoricalPrice);
-        }
+        historicalPriceListForSymbols.add(iexHistoricalPrice);
       }
       return historicalPriceListForSymbols;
     }
