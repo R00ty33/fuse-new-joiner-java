@@ -1,9 +1,7 @@
 package org.galatea.starter.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.elasticsearch.IexHistoricalPriceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +26,8 @@ public class IexService {
   private IexClient iexClient;
   @NonNull
   private IexCloudClient iexCloudClient;
+  @Autowired
+  private IexHistoricalPriceService iexHistoricalPricesService;
 
 
 
@@ -90,8 +92,13 @@ public class IexService {
     List<IexHistoricalPrice> result = new ArrayList<>();
     try {
       if (StringUtils.isNotBlank(date)) {
+        //toDo: Nicholas Rudolph
+        // if (check elasticsearch index)
+        // else (call iexCloudClient)
+        //    save object to index
         result = iexCloudClient
                 .getHistoricalPricesForSymbolWithDate(symbol, date);
+        addStockToHistoricalPriceIndex(result.get(0));
       } else {
         if (StringUtils.isBlank(range)) {
           result = iexCloudClient
@@ -106,6 +113,20 @@ public class IexService {
               + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
               + symbol);
     }
+
     return result;
+  }
+
+  /**
+   * Adds the stock to the historical_prices index
+   *
+   * @param iexHistoricalPrice object
+   * @return void
+   */
+  public void addStockToHistoricalPriceIndex(IexHistoricalPrice iexHistoricalPrice) {
+    if (!Objects.isNull(iexHistoricalPrice)) {
+      iexHistoricalPrice.setId(iexHistoricalPrice.getSymbol() + iexHistoricalPrice.getDate());
+      iexHistoricalPricesService.save(iexHistoricalPrice);
+    }
   }
 }

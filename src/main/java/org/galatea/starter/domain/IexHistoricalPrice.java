@@ -8,14 +8,15 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 @Data
 @Builder
-@Document(indexName = "historical_prices")
+@Document(indexName = "historical_prices", type = "IexHistoricalPrice")
 public class IexHistoricalPrice {
+  @Id
+  private String id;
+  private String symbol;
   private BigDecimal close;
   private BigDecimal high;
   private BigDecimal low;
   private BigDecimal open;
-  @Id
-  private String symbol;
   private Integer volume;
   private String date;
 }

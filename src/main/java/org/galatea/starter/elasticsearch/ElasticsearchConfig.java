@@ -1,11 +1,8 @@
-package org.galatea.starter;
+package org.galatea.starter.elasticsearch;
 
 import java.net.InetAddress;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
