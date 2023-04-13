@@ -2,11 +2,14 @@ package org.galatea.starter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.Client;
 import org.galatea.starter.utils.exception.MissingOptionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 
 /**
@@ -25,7 +28,6 @@ public class Application implements ApplicationRunner {
   public static void main(final String[] args) {
     log.info("Starting spring application {}", System.getProperty("application.name"));
     SpringApplication.run(Application.class, args);
-
   }
 
   /**
