@@ -25,7 +25,6 @@ public class Application implements ApplicationRunner {
   public static void main(final String[] args) {
     log.info("Starting spring application {}", System.getProperty("application.name"));
     SpringApplication.run(Application.class, args);
-
   }
 
   /**

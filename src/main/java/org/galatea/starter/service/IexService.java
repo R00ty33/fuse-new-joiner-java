@@ -1,12 +1,16 @@
 package org.galatea.starter.service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.elasticsearch.IexHistoricalPriceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -20,6 +24,11 @@ public class IexService {
 
   @NonNull
   private IexClient iexClient;
+  @NonNull
+  private IexCloudClient iexCloudClient;
+  @Autowired
+  private IexHistoricalPriceService iexHistoricalPricesService;
+
 
 
   /**
@@ -45,5 +54,79 @@ public class IexService {
     }
   }
 
+  /**
+   * Get the historical traded prices for a given range or date.
+   *
+   * @param symbols the ticker for the stock
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param date the specific date (YYYYMMDD)
+   * @return A list of historical traded price objects for each Symbol that is passed in
+   */
+  public List<List<IexHistoricalPrice>> getHistoricalPriceForSymbol(
+          final List<String> symbols, final String range, final String date) {
+    if (CollectionUtils.isEmpty(symbols)) { // symbols must not be empty
+      log.warn("User passed empty list to /HistorcalTradePrices endpoint. "
+              + "Symbols must not be empty.");
+      return Collections.emptyList();
+    } else {
+      List<List<IexHistoricalPrice>> historicalPriceListForSymbols = new ArrayList<>();
+      List<IexHistoricalPrice> iexHistoricalPrice;
+      for (String symbol : symbols) {
+        iexHistoricalPrice = getHistoricalPricesForSymbol(symbol, range, date);
+        historicalPriceListForSymbols.add(iexHistoricalPrice);
+      }
+      return historicalPriceListForSymbols;
+    }
+  }
 
+  /**
+   * Calls the IEX historical traded prices endpoint.
+   *
+   * @param symbol the ticker for the stock
+   * @param range the time series for the historical traded price (max,5y,2y,1y,ytd,6m,3m,1m,5d)
+   * @param date the specific date (YYYYMMDD)
+   * @return A list of historical traded price objects for the symbol passed
+   */
+  public List<IexHistoricalPrice> getHistoricalPricesForSymbol(
+          final String symbol, final String range, final String date) {
+    List<IexHistoricalPrice> result = new ArrayList<>();
+    try {
+      if (StringUtils.isNotBlank(date)) {
+        //toDo: Nicholas Rudolph
+        // if (check elasticsearch index)
+        // else (call iexCloudClient)
+        //    save object to index
+        result = iexCloudClient
+                .getHistoricalPricesForSymbolWithDate(symbol, date);
+        addStockToHistoricalPriceIndex(result.get(0));
+      } else {
+        if (StringUtils.isBlank(range)) {
+          result = iexCloudClient
+                  .getHistoricalPricesForSymbolWithRange(symbol, "max");
+        } else {
+          result = iexCloudClient
+                  .getHistoricalPricesForSymbolWithRange(symbol, range);
+        }
+      }
+    } catch (Exception e) {
+      log.error("Exception: " + e
+              + " occurred when calling downstream IEX /historicalPrices API passing symbol: "
+              + symbol);
+    }
+
+    return result;
+  }
+
+  /**
+   * Adds the stock to the historical_prices index
+   *
+   * @param iexHistoricalPrice object
+   * @return void
+   */
+  public void addStockToHistoricalPriceIndex(IexHistoricalPrice iexHistoricalPrice) {
+    if (!Objects.isNull(iexHistoricalPrice)) {
+      iexHistoricalPrice.setId(iexHistoricalPrice.getSymbol() + iexHistoricalPrice.getDate());
+      iexHistoricalPricesService.save(iexHistoricalPrice);
+    }
+  }
 }

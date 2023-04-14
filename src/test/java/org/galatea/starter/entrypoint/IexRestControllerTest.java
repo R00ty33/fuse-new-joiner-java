@@ -1,6 +1,7 @@
 package org.galatea.starter.entrypoint;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,16 +58,15 @@ public class IexRestControllerTest extends ASpringTest {
 
   @Test
   public void testGetLastTradedPrice() throws Exception {
-
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/lastTradedPrice?symbols=AAPL")
+            .get("/iex/lastTradedPrice?symbols=FB")
             // This URL will be hit by the MockMvc client. The result is configured in the file
             // src/test/resources/wiremock/mappings/mapping-lastTradedPrice.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].symbol", is("FB")))
-        .andExpect(jsonPath("$[0].price").value(new BigDecimal("186.34")))
+        .andExpect(jsonPath("$[0].price").value(new BigDecimal("186.3011")))
         .andReturn();
   }
 
@@ -81,4 +81,145 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(jsonPath("$", is(Collections.emptyList())))
         .andReturn();
   }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDate() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET&date=20220202")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andExpect(jsonPath("$[0][0].close", is(99.8)))
+            .andExpect(jsonPath("$[0][0].high", is(103.245)))
+            .andExpect(jsonPath("$[0][0].low", is(97)))
+            .andExpect(jsonPath("$[0][0].open", is(103.215)))
+            .andExpect(jsonPath("$[0][0].volume", is(7027169)))
+            .andExpect(jsonPath("$[0][0].date", is("2022-02-02")))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDate2() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET,TSLA&date=20220202")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andExpect(jsonPath("$[0][0].close", is(99.8)))
+            .andExpect(jsonPath("$[0][0].high", is(103.245)))
+            .andExpect(jsonPath("$[0][0].low", is(97)))
+            .andExpect(jsonPath("$[0][0].open", is(103.215)))
+            .andExpect(jsonPath("$[0][0].volume", is(7027169)))
+            .andExpect(jsonPath("$[0][0].date", is("2022-02-02")))
+            .andExpect(jsonPath("$[1][0].symbol", is("TSLA")))
+            .andExpect(jsonPath("$[1][0].close", is(301.887)))
+            .andExpect(jsonPath("$[1][0].high", is(310.5)))
+            .andExpect(jsonPath("$[1][0].low", is(296.47)))
+            .andExpect(jsonPath("$[1][0].open", is(309.393)))
+            .andExpect(jsonPath("$[1][0].volume", is(66793035)))
+            .andExpect(jsonPath("$[1][0].date", is("2022-02-02")))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDateInvalidSymbol() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=INVALID&date=20220202")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0]", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithDateInvalidSymbol2() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET,INVALID&date=20220202")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andExpect(jsonPath("$[0][0].close", is(99.8)))
+            .andExpect(jsonPath("$[0][0].high", is(103.245)))
+            .andExpect(jsonPath("$[0][0].low", is(97)))
+            .andExpect(jsonPath("$[0][0].open", is(103.215)))
+            .andExpect(jsonPath("$[0][0].volume", is(7027169)))
+            .andExpect(jsonPath("$[0][0].date", is("2022-02-02")))
+            .andExpect(jsonPath("$[1]", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithRange() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET&range=max")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andExpect(jsonPath("$[0][0].open", is(18)))
+            .andExpect(jsonPath("$[0][0].close", is(18)))
+            .andExpect(jsonPath("$[0][0].date", is("2019-09-13")))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithRange2() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=NET,TSLA&range=max")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("NET")))
+            .andExpect(jsonPath("$[0][0].open", is(18)))
+            .andExpect(jsonPath("$[0][0].close", is(18)))
+            .andExpect(jsonPath("$[0][0].date", is("2019-09-13")))
+            .andExpect(jsonPath("$[1][0].symbol", is("TSLA")))
+            .andExpect(jsonPath("$[1][0].open", is(1.2667)))
+            .andExpect(jsonPath("$[1][0].close", is(1.5927)))
+            .andExpect(jsonPath("$[1][0].date", is("2010-06-29")))
+
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithRangeInvalidSymbol() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=INVALID&range=5y")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0]", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithRangeInvalidSymbol2() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=TSLA,INVALID&range=max")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0][0].symbol", is("TSLA")))
+            .andExpect(jsonPath("$[0][0].open", is(1.2667)))
+            .andExpect(jsonPath("$[0][0].close", is(1.5927)))
+            .andExpect(jsonPath("$[0][0].date", is("2010-06-29")))
+            .andExpect(jsonPath("$[1]", is(Collections.emptyList())))
+            .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricTradedPricesWithEmptyList() throws Exception {
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalTradedPrices?symbols=")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(Collections.emptyList())))
+            .andReturn();
+  }
+
 }

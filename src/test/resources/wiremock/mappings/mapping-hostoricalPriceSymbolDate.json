@@ -1,13 +1,23 @@
 {
   "id" : "16369e06-78d4-40a7-98d1-3dbe0ba82fc9",
-  "name" : "tops_last",
+  "name" : "stock_symbol",
   "request" : {
-    "url" : "/tops/last?symbols=FB",
+    "url" : "/stock/NET/chart/date/20230408?token=${spring.rest.iexAuthToken}",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
-    "jsonBody" : [{"symbol":"FB","price":186.3011,"size":100,"time":1565273330617}],
+    "jsonBody" : [
+      {
+        "close": 60.05,
+        "high": 64.95,
+        "low": 57.80,
+        "open": 59.45,
+        "symbol": "NET",
+        "volume": 31747434,
+        "date": "2023-04-10"
+      }
+    ],
     "headers" : {
       "Server" : "nginx",
       "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",
